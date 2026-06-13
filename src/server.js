@@ -34,6 +34,10 @@ app.get('/contacts/:id', (req, res) => {
   res.json(contact);
 });
 
+app.get('/version', (req, res) => {
+  res.json({ version: '1.0.0' });
+});
+
 const port = process.env.PORT || 3010;
 if (require.main === module) {
   app.listen(port, () => console.log(`contacts api on :${port}`));
