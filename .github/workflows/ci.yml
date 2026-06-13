@@ -1,0 +1,17 @@
+name: CI
+on:
+  pull_request:
+    branches: [ main ]
+
+# NOTE (demo): this workflow starts with build + test only — NO spec-lint step.
+# Beat 2 of the demo has Agent Mode ADD a `postman spec lint` step here, live.
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install
+      - run: npm test

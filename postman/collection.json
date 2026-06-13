@@ -1,0 +1,61 @@
+{
+  "info": {
+    "name": "Contacts API",
+    "description": "Contacts API demo collection. Example responses use camelCase (customerId, phoneNumber, emailAddress) — the contract the backend (snake_case) drifts from.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3010" }
+  ],
+  "item": [
+    {
+      "name": "Create Contact",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/contacts", "host": ["{{baseUrl}}"], "path": ["contacts"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customerId\": \"cust-001\",\n  \"name\": \"Ada Lovelace\",\n  \"phoneNumber\": \"+1-555-0100\",\n  \"emailAddress\": \"ada@example.com\"\n}"
+        }
+      },
+      "response": [
+        {
+          "name": "201 Created",
+          "originalRequest": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/contacts", "host": ["{{baseUrl}}"], "path": ["contacts"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"cust-001\",\n  \"name\": \"Ada Lovelace\",\n  \"phoneNumber\": \"+1-555-0100\",\n  \"emailAddress\": \"ada@example.com\"\n}"
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"id\": \"c-1\",\n  \"customerId\": \"cust-001\",\n  \"name\": \"Ada Lovelace\",\n  \"phoneNumber\": \"+1-555-0100\",\n  \"emailAddress\": \"ada@example.com\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "List Contacts",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/contacts", "host": ["{{baseUrl}}"], "path": ["contacts"] }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Contact by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/contacts/:id", "host": ["{{baseUrl}}"], "path": ["contacts", ":id"], "variable": [{ "key": "id", "value": "c-1" }] }
+      },
+      "response": []
+    }
+  ]
+}
