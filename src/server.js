@@ -11,6 +11,10 @@ app.use(express.json());
 const contacts = new Map();
 let seq = 1;
 
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
 app.get('/contacts', (req, res) => {
   res.json([...contacts.values()]);
 });
