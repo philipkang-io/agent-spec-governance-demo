@@ -1,22 +1,26 @@
 {
   "info": {
     "name": "Contacts API",
-    "description": "Contacts API demo collection. Example responses use camelCase (customerId, phoneNumber, emailAddress) — the contract the backend (snake_case) drifts from.",
+    "description": "Contacts API collection. Aligned with the OpenAPI spec: ContactInput fields are name/email/phone; Contact response fields are id/name/email/phone. All requests require a Bearer token.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    { "key": "baseUrl", "value": "http://localhost:3010" }
+    { "key": "baseUrl", "value": "http://localhost:3010" },
+    { "key": "bearerToken", "value": "" }
   ],
   "item": [
     {
       "name": "Create Contact",
       "request": {
         "method": "POST",
-        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{bearerToken}}" }
+        ],
         "url": { "raw": "{{baseUrl}}/contacts", "host": ["{{baseUrl}}"], "path": ["contacts"] },
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"customerId\": \"cust-001\",\n  \"name\": \"Ada Lovelace\",\n  \"phoneNumber\": \"+1-555-0100\",\n  \"emailAddress\": \"ada@example.com\"\n}"
+          "raw": "{\n  \"name\": \"Ada Lovelace\",\n  \"email\": \"ada@example.com\",\n  \"phone\": \"+1-555-0100\"\n}"
         }
       },
       "response": [
@@ -24,18 +28,38 @@
           "name": "201 Created",
           "originalRequest": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{bearerToken}}" }
+            ],
             "url": { "raw": "{{baseUrl}}/contacts", "host": ["{{baseUrl}}"], "path": ["contacts"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customerId\": \"cust-001\",\n  \"name\": \"Ada Lovelace\",\n  \"phoneNumber\": \"+1-555-0100\",\n  \"emailAddress\": \"ada@example.com\"\n}"
+              "raw": "{\n  \"name\": \"Ada Lovelace\",\n  \"email\": \"ada@example.com\",\n  \"phone\": \"+1-555-0100\"\n}"
             }
           },
           "status": "Created",
           "code": 201,
           "_postman_previewlanguage": "json",
           "header": [{ "key": "Content-Type", "value": "application/json" }],
-          "body": "{\n  \"id\": \"c-1\",\n  \"customerId\": \"cust-001\",\n  \"name\": \"Ada Lovelace\",\n  \"phoneNumber\": \"+1-555-0100\",\n  \"emailAddress\": \"ada@example.com\"\n}"
+          "body": "{\n  \"id\": \"c-1\",\n  \"name\": \"Ada Lovelace\",\n  \"email\": \"ada@example.com\",\n  \"phone\": \"+1-555-0100\"\n}"
+        },
+        {
+          "name": "401 Unauthorized",
+          "originalRequest": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/contacts", "host": ["{{baseUrl}}"], "path": ["contacts"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ada Lovelace\",\n  \"email\": \"ada@example.com\"\n}"
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"code\": 401,\n  \"message\": \"Unauthorized\"\n}"
         }
       ]
     },
@@ -43,19 +67,110 @@
       "name": "List Contacts",
       "request": {
         "method": "GET",
-        "header": [],
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{bearerToken}}" }
+        ],
         "url": { "raw": "{{baseUrl}}/contacts", "host": ["{{baseUrl}}"], "path": ["contacts"] }
       },
-      "response": []
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{bearerToken}}" }],
+            "url": { "raw": "{{baseUrl}}/contacts", "host": ["{{baseUrl}}"], "path": ["contacts"] }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "[\n  {\n    \"id\": \"c-1\",\n    \"name\": \"Ada Lovelace\",\n    \"email\": \"ada@example.com\",\n    \"phone\": \"+1-555-0100\"\n  }\n]"
+        },
+        {
+          "name": "401 Unauthorized",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/contacts", "host": ["{{baseUrl}}"], "path": ["contacts"] }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"code\": 401,\n  \"message\": \"Unauthorized\"\n}"
+        }
+      ]
     },
     {
       "name": "Get Contact by ID",
       "request": {
         "method": "GET",
-        "header": [],
-        "url": { "raw": "{{baseUrl}}/contacts/:id", "host": ["{{baseUrl}}"], "path": ["contacts", ":id"], "variable": [{ "key": "id", "value": "c-1" }] }
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{bearerToken}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/contacts/:id",
+          "host": ["{{baseUrl}}"],
+          "path": ["contacts", ":id"],
+          "variable": [{ "key": "id", "value": "c-1" }]
+        }
       },
-      "response": []
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{bearerToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/contacts/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["contacts", ":id"],
+              "variable": [{ "key": "id", "value": "c-1" }]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"id\": \"c-1\",\n  \"name\": \"Ada Lovelace\",\n  \"email\": \"ada@example.com\",\n  \"phone\": \"+1-555-0100\"\n}"
+        },
+        {
+          "name": "401 Unauthorized",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/contacts/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["contacts", ":id"],
+              "variable": [{ "key": "id", "value": "c-1" }]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"code\": 401,\n  \"message\": \"Unauthorized\"\n}"
+        },
+        {
+          "name": "404 Not Found",
+          "originalRequest": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{bearerToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/contacts/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["contacts", ":id"],
+              "variable": [{ "key": "id", "value": "c-999" }]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"code\": 404,\n  \"message\": \"Contact not found\"\n}"
+        }
+      ]
     }
   ]
 }

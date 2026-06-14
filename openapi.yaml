@@ -2,32 +2,297 @@ openapi: 3.0.3
 info:
   title: Contacts API
   version: 1.0.0
-# DELIBERATELY BAD SPEC — do not pre-fix. Missing: securitySchemes/security,
-# rate-limit annotations, request-body schema properties, response content/schemas,
-# operationIds, summaries, and 4xx/5xx error responses. Drives a low Catalog scorecard.
+  description: API for managing contacts.
+
+security:
+  - BearerAuth: []
+
 paths:
   /contacts:
     get:
+      summary: List all contacts
+      operationId: listContacts
+      security:
+        - BearerAuth: []
       responses:
         '200':
-          description: ok
+          description: A list of contacts.
+          headers:
+            RateLimit-Limit:
+              description: The number of allowed requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Remaining:
+              description: The number of remaining requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Reset:
+              description: The number of seconds left in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactList'
+        '401':
+          description: Unauthorized.
+          headers:
+            RateLimit-Limit:
+              description: The number of allowed requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Remaining:
+              description: The number of remaining requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Reset:
+              description: The number of seconds left in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error.
+          headers:
+            RateLimit-Limit:
+              description: The number of allowed requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Remaining:
+              description: The number of remaining requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Reset:
+              description: The number of seconds left in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     post:
+      summary: Create a new contact
+      operationId: createContact
+      security:
+        - BearerAuth: []
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/ContactInput'
       responses:
         '201':
-          description: created
+          description: Contact created successfully.
+          headers:
+            RateLimit-Limit:
+              description: The number of allowed requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Remaining:
+              description: The number of remaining requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Reset:
+              description: The number of seconds left in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+        '401':
+          description: Unauthorized.
+          headers:
+            RateLimit-Limit:
+              description: The number of allowed requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Remaining:
+              description: The number of remaining requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Reset:
+              description: The number of seconds left in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error.
+          headers:
+            RateLimit-Limit:
+              description: The number of allowed requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Remaining:
+              description: The number of remaining requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Reset:
+              description: The number of seconds left in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /contacts/{id}:
     get:
+      summary: Get a contact by ID
+      operationId: getContactById
+      security:
+        - BearerAuth: []
       parameters:
         - name: id
           in: path
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/ContactId'
       responses:
         '200':
-          description: ok
+          description: A single contact.
+          headers:
+            RateLimit-Limit:
+              description: The number of allowed requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Remaining:
+              description: The number of remaining requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Reset:
+              description: The number of seconds left in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+        '401':
+          description: Unauthorized.
+          headers:
+            RateLimit-Limit:
+              description: The number of allowed requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Remaining:
+              description: The number of remaining requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Reset:
+              description: The number of seconds left in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Contact not found.
+          headers:
+            RateLimit-Limit:
+              description: The number of allowed requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Remaining:
+              description: The number of remaining requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Reset:
+              description: The number of seconds left in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error.
+          headers:
+            RateLimit-Limit:
+              description: The number of allowed requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Remaining:
+              description: The number of remaining requests in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+            RateLimit-Reset:
+              description: The number of seconds left in the current period.
+              schema:
+                $ref: '#/components/schemas/RateLimitInteger'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    RateLimitInteger:
+      type: integer
+      description: An integer value used for rate-limit headers.
+    ContactId:
+      type: string
+      description: Unique identifier for a contact.
+    ContactList:
+      type: array
+      description: A list of contacts.
+      items:
+        $ref: '#/components/schemas/Contact'
+    Contact:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ContactId'
+        name:
+          type: string
+          description: Full name of the contact.
+        email:
+          type: string
+          format: email
+          description: Email address of the contact.
+        phone:
+          type: string
+          description: Phone number of the contact.
+      required:
+        - id
+        - name
+        - email
+    ContactInput:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Full name of the contact.
+        email:
+          type: string
+          format: email
+          description: Email address of the contact.
+        phone:
+          type: string
+          description: Phone number of the contact.
+      required:
+        - name
+        - email
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code.
+        message:
+          type: string
+          description: Error message.
+      required:
+        - code
+        - message
