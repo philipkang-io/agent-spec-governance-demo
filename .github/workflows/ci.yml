@@ -3,8 +3,6 @@ on:
   pull_request:
     branches: [ main ]
 
-# NOTE (demo): this workflow starts with build + test only — NO spec-lint step.
-# Beat 2 of the demo has Agent Mode ADD a `postman spec lint` step here, live.
 jobs:
   build-test:
     runs-on: ubuntu-latest
@@ -15,3 +13,14 @@ jobs:
           node-version: '20'
       - run: npm install
       - run: npm test
+
+  postman-spec-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Postman CLI
+        run: curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+      - name: Lint OpenAPI spec
+        env:
+          POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
+        run: postman spec lint openapi.yaml --workspace-id 8759ff95-39b0-492f-93f0-f1bdb599d2b6
